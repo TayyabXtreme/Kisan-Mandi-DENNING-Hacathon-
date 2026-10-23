@@ -9,20 +9,31 @@ import { Button, FieldLabel, Sheet } from "../ui";
 
 type Listing = { askingPrice: number; quantity: number; crop: { name: string } };
 
-/** Buyer proposes Rs/40kg × maund for the pinned listing. */
+/**
+ * Proposes Rs/40kg × maund for a listing: the buyer's offer (how much stock
+ * they want, at what price) or either side's counter-offer. Remount with a
+ * new `key` to reset the fields to `initial`.
+ */
 export function OfferSheet({
   visible,
   onClose,
   listing,
   onSubmit,
+  initial,
+  title = "Make an offer",
+  submitTitle = "Send offer",
 }: {
   visible: boolean;
   onClose: () => void;
   listing: Listing;
   onSubmit: (offer: { price: number; quantity: number; body?: string }) => Promise<void>;
+  /** Prefill (e.g. the offer being countered); defaults to the asking price and all stock. */
+  initial?: { price: number; quantity: number };
+  title?: string;
+  submitTitle?: string;
 }) {
-  const [price, setPrice] = useState(String(listing.askingPrice));
-  const [qty, setQty] = useState(String(listing.quantity));
+  const [price, setPrice] = useState(String(initial?.price ?? listing.askingPrice));
+  const [qty, setQty] = useState(String(initial?.quantity ?? listing.quantity));
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -33,7 +44,7 @@ export function OfferSheet({
   const submit = async () => {
     if (!(p > 0)) return setError("Enter a price above 0.");
     if (!(q > 0)) return setError("Enter a quantity above 0.");
-    if (q > listing.quantity) return setError(`The farmer has ${num(listing.quantity)} maund.`);
+    if (q > listing.quantity) return setError(`Only ${num(listing.quantity)} maund in stock.`);
     setError("");
     setBusy(true);
     try {
@@ -49,10 +60,10 @@ export function OfferSheet({
 
   const diff = p > 0 ? ((p - listing.askingPrice) / listing.askingPrice) * 100 : 0;
   return (
-    <Sheet visible={visible} onClose={onClose} title="Make an offer" maxHeight="90%">
+    <Sheet visible={visible} onClose={onClose} title={title} maxHeight="90%">
       <View style={styles.body}>
         <Text style={styles.sub}>
-          {listing.crop.name} · asking {rs(listing.askingPrice)}/40kg · {num(listing.quantity)} maund
+          {listing.crop.name} · asking {rs(listing.askingPrice)}/40kg · {num(listing.quantity)} maund in stock
         </Text>
         <View style={styles.fields}>
           <FieldLabel>Your price per 40 kg</FieldLabel>
@@ -65,14 +76,20 @@ export function OfferSheet({
             accessibilityLabel="Offer price per 40 kg"
             hint={p > 0 && diff !== 0 ? `${Math.abs(diff).toFixed(1)}% ${diff < 0 ? "below" : "above"} the asking price` : undefined}
           />
-          <FieldLabel>Quantity (maund)</FieldLabel>
-          <TextField value={qty} onChangeText={setQty} keyboardType="decimal-pad" accessibilityLabel="Quantity in maund" />
+          <FieldLabel>How much? (maund)</FieldLabel>
+          <TextField
+            value={qty}
+            onChangeText={setQty}
+            keyboardType="decimal-pad"
+            accessibilityLabel="Quantity in maund"
+            hint={q > 0 && q < listing.quantity ? `${num(listing.quantity - q)} maund stays with the farmer` : undefined}
+          />
           <FieldLabel>Note (optional)</FieldLabel>
           <TextField value={note} onChangeText={setNote} placeholder="e.g. I can collect on Friday" maxLength={500} />
         </View>
         {p > 0 && q > 0 && <Text style={styles.total}>Total {rs(p * q)}</Text>}
         {!!error && <Text style={styles.error}>{error}</Text>}
-        <Button title="Send offer" Icon={HandCoins} variant="green" loading={busy} onPress={() => void submit()} style={{ marginTop: 12 }} />
+        <Button title={submitTitle} Icon={HandCoins} variant="green" loading={busy} onPress={() => void submit()} style={{ marginTop: 12 }} />
       </View>
     </Sheet>
   );

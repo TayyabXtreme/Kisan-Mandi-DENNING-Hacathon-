@@ -37,6 +37,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ActionSheet, confirmAction, notify, type SheetAction } from "@/components/kisan/chat/action-sheet";
 import {
+  answerOffer,
   errorText,
   markChatRead,
   sendMessage,
@@ -44,7 +45,7 @@ import {
   useChatReady,
 } from "@/components/kisan/chat/chat-api";
 import { Composer } from "@/components/kisan/chat/composer";
-import { DateSeparator, MessageBubble, type OfferAction } from "@/components/kisan/chat/message-bubble";
+import { DateSeparator, MessageBubble, type BubbleOfferAction, type OfferAction } from "@/components/kisan/chat/message-bubble";
 import { OfferSheet } from "@/components/kisan/chat/offer-sheet";
 import { Tap } from "@/components/kisan/tap";
 import { BackButton, Button, CropIcon, GradeBadge, IconButton, MarketLabelBadge, StateView, Tag } from "@/components/kisan/ui";
@@ -52,7 +53,6 @@ import { UserAvatar } from "@/components/user-avatar";
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
 import { api as rest } from "@/lib/api/client";
-import { invalidate } from "@/lib/api/resources";
 import type { ChatDetail, ChatMessage } from "@/lib/api/types";
 import { num, rs, todayPK } from "@/lib/format";
 import { api } from "../../../convex/_generated/api";
@@ -103,7 +103,8 @@ export default function ChatScreen() {
   const [attachOpen, setAttachOpen] = useState(false);
   const [offerOpen, setOfferOpen] = useState(false);
   const [selected, setSelected] = useState<ChatMessage | null>(null);
-  const [accepting, setAccepting] = useState<ChatMessage | null>(null);
+  /** The offer being countered (prefills the offer sheet); null for a fresh offer. */
+  const [countering, setCountering] = useState<ChatMessage | null>(null);
   const [viewer, setViewer] = useState<string | null>(null);
 
   // Opening the chat (and every new incoming message while open) marks it read.
@@ -200,11 +201,10 @@ export default function ChatScreen() {
     }).catch(() => {});
   };
 
-  const offerAction = async (m: ChatMessage, action: OfferAction, markSold = false) => {
+  const offerAction = async (m: ChatMessage, action: OfferAction) => {
     setBusyOffer(m.id);
     try {
-      await rest.post(`/messages/${m.id}/offer`, { action, markSold });
-      if (action === "markSold" || markSold) void invalidate("/listings");
+      await answerOffer(m.id, action);
     } catch (e) {
       notify("Couldn't update the offer", errorText(e));
     } finally {
@@ -212,10 +212,23 @@ export default function ChatScreen() {
     }
   };
 
-  const onOffer = (m: ChatMessage, action: OfferAction) => {
-    if (action === "accept") setAccepting(m);
-    else if (action === "decline")
-      confirmAction("Decline this offer?", "The buyer will see that you declined.", "Decline", () => void offerAction(m, "decline"));
+  const onOffer = (m: ChatMessage, action: BubbleOfferAction) => {
+    if (action === "counter") {
+      setCountering(m);
+      setOfferOpen(true);
+    } else if (action === "accept" && m.offer) {
+      const terms = `${num(m.offer.quantity)} maund at ${rs(m.offer.price)}/40kg (total ${rs(m.offer.price * m.offer.quantity)})`;
+      const left = listing ? listing.quantity - m.offer.quantity : 0;
+      confirmAction(
+        "Accept this offer?",
+        c.side === "farmer"
+          ? `You sell ${terms}. ${num(m.offer.quantity)} maund leaves your stock${left > 0 ? `, ${num(left)} maund stays listed` : " and the listing is sold out"}.`
+          : `You buy ${terms} from ${other?.name ?? "the farmer"}.`,
+        "Accept",
+        () => void offerAction(m, "accept"),
+      );
+    } else if (action === "decline")
+      confirmAction("Decline this offer?", `${other?.name ?? "They"} will see that you declined.`, "Decline", () => void offerAction(m, "decline"));
     else
       confirmAction("Mark listing as sold?", "Buyers will no longer see it in the Market.", "Mark sold", () =>
         void offerAction(m, "markSold"),
@@ -429,8 +442,17 @@ export default function ChatScreen() {
         actions={[
           { label: "Take a photo", Icon: Camera, onPress: () => void pickImage("camera") },
           { label: "Choose from gallery", Icon: ImageIcon, onPress: () => void pickImage("library") },
-          ...(c.side === "buyer" && listing && listingActive
-            ? [{ label: "Make a price offer", Icon: HandCoins, onPress: () => setOfferOpen(true) }]
+          ...(listing && listingActive
+            ? [
+                {
+                  label: c.side === "buyer" ? "Make a price offer" : "Offer a price to the buyer",
+                  Icon: HandCoins,
+                  onPress: () => {
+                    setCountering(null);
+                    setOfferOpen(true);
+                  },
+                },
+              ]
             : []),
         ]}
       />
@@ -448,26 +470,15 @@ export default function ChatScreen() {
             : []
         }
       />
-      <ActionSheet
-        visible={!!accepting}
-        onClose={() => setAccepting(null)}
-        title="Accept this offer?"
-        actions={
-          accepting
-            ? [
-                { label: "Accept offer", Icon: HandCoins, onPress: () => void offerAction(accepting, "accept") },
-                ...(listingActive
-                  ? [{ label: "Accept and mark listing sold", Icon: Store, onPress: () => void offerAction(accepting, "accept", true) }]
-                  : []),
-              ]
-            : []
-        }
-      />
-      {listing && c.side === "buyer" && (
+      {listing && (
         <OfferSheet
+          key={countering?.id ?? "new"}
           visible={offerOpen}
           onClose={() => setOfferOpen(false)}
           listing={listing}
+          initial={countering?.offer ?? undefined}
+          title={countering ? "Counter offer" : c.side === "buyer" ? "Make an offer" : "Offer a price"}
+          submitTitle={countering ? "Send counter offer" : "Send offer"}
           onSubmit={async (offer) => {
             await sendMessage(c.id, { type: "offer", ...offer });
             toBottom();

@@ -257,6 +257,35 @@ export const pricePublishSchema = z.object({
     .max(300),
 });
 
+export const EXPENSE_CATEGORIES = [
+  "seed",
+  "fertilizer",
+  "pesticide",
+  "labour",
+  "irrigation",
+  "machinery",
+  "transport",
+  "other",
+] as const;
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
+
+/** A farmer's cost on one crop (Rs). `date` is a Pakistan day, not in the future. */
+export const expenseSchema = (today: string) =>
+  z.object({
+    cropId: z.string().min(1, "CROP_REQUIRED"),
+    category: z.enum(EXPENSE_CATEGORIES, { message: "CATEGORY_REQUIRED" }),
+    amount: z.coerce
+      .number({ message: "AMOUNT_POSITIVE" })
+      .refine((n) => Number.isFinite(n) && n > 0, "AMOUNT_POSITIVE")
+      .refine((n) => n <= 100000000, "AMOUNT_TOO_LARGE"),
+    note: z.string().trim().max(200, "NOTE_LONG").optional(),
+    date: dateKey.refine((d) => d <= today, "DATE_FUTURE"),
+  });
+export type ExpenseInput = z.input<ReturnType<typeof expenseSchema>>;
+
+/** Maund amounts keep two decimals (avoids 0.1 + 0.2 noise in stock). */
+export const round2 = (n: number) => Math.round(n * 100) / 100;
+
 export const SUPPORT_TOPICS = ["market", "price", "account", "other"] as const;
 export type SupportTopic = (typeof SUPPORT_TOPICS)[number];
 

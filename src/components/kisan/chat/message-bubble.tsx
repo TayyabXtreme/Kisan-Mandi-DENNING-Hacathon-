@@ -1,17 +1,20 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { Check, CheckCheck, CircleCheck, CircleX, Clock, HandCoins, Sparkles, Tag as TagIcon } from "lucide-react-native";
+import { ArrowLeftRight, Check, CheckCheck, CircleCheck, CircleX, Clock, HandCoins, Repeat, Sparkles, Tag as TagIcon } from "lucide-react-native";
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
 import type { ChatMessage } from "@/lib/api/types";
 import { clock, num, rs } from "@/lib/format";
 import { Tap } from "../tap";
 import { Button } from "../ui";
+import type { OfferAction } from "./chat-api";
 import { VoicePlayer } from "./voice-player";
 
 export const MY_BUBBLE = theme.greenSoft; // #DDEBD5
-export type OfferAction = "accept" | "decline" | "markSold";
+/** "counter" opens the offer sheet instead of answering on the server. */
+export type BubbleOfferAction = OfferAction | "counter";
+export type { OfferAction };
 
 type Props = {
   message: ChatMessage;
@@ -21,7 +24,7 @@ type Props = {
   listingActive: boolean;
   busy?: boolean;
   onLongPress: () => void;
-  onOffer: (action: OfferAction) => void;
+  onOffer: (action: BubbleOfferAction) => void;
   onAskAssistant: () => void;
   onOpenImage: (url: string) => void;
 };
@@ -41,9 +44,10 @@ function Meta({ m, read }: { m: ChatMessage; read: boolean }) {
 }
 
 const OFFER_STATUS = {
-  pending: { label: "Waiting for farmer", Icon: Clock, bg: theme.mustardSoft, fg: "#7A5A12" },
-  accepted: { label: "Accepted", Icon: CircleCheck, bg: theme.greenSoft, fg: theme.green },
+  pending: { label: "Waiting for reply", Icon: Clock, bg: theme.mustardSoft, fg: "#7A5A12" },
+  accepted: { label: "Deal done", Icon: CircleCheck, bg: theme.greenSoft, fg: theme.green },
   declined: { label: "Declined", Icon: CircleX, bg: theme.redSoft, fg: theme.red },
+  countered: { label: "Countered", Icon: ArrowLeftRight, bg: theme.sand, fg: theme.muted },
 } as const;
 
 function OfferBody({
@@ -57,11 +61,15 @@ function OfferBody({
   const offer = m.offer!;
   const s = OFFER_STATUS[offer.status];
   const farmer = viewerSide === "farmer";
+  // Whoever didn't send the offer answers it: accept, counter or decline.
+  const toAnswer = !m.mine && offer.status === "pending" && listingActive;
+  const waitingFor = m.mine ? (farmer ? "buyer" : "farmer") : "you";
+  const label = offer.status === "pending" ? `Waiting for ${waitingFor}` : s.label;
   return (
     <View style={styles.offer}>
       <View style={styles.offerHead}>
         <HandCoins size={18} color={theme.green} strokeWidth={2.2} />
-        <Text style={styles.offerTitle}>{m.mine ? "Your offer" : "Price offer"}</Text>
+        <Text style={styles.offerTitle}>{m.mine ? "Your offer" : farmer ? "Buyer's offer" : "Farmer's offer"}</Text>
       </View>
       <Text style={styles.offerPrice}>
         {rs(offer.price)}
@@ -73,13 +81,24 @@ function OfferBody({
       {!!m.body && <Text style={styles.offerNote}>{m.body}</Text>}
       <View style={[styles.offerStatus, { backgroundColor: s.bg }]}>
         <s.Icon size={14} color={s.fg} strokeWidth={2.4} />
-        <Text style={[styles.offerStatusText, { color: s.fg }]}>{s.label}</Text>
+        <Text style={[styles.offerStatusText, { color: s.fg }]}>{label}</Text>
       </View>
-      {farmer && offer.status === "pending" && (
-        <View style={styles.offerActions}>
-          <Button title="Decline" small variant="danger" style={{ flex: 1 }} disabled={busy} onPress={() => onOffer("decline")} />
-          <Button title="Accept" small variant="green" style={{ flex: 1 }} loading={busy} onPress={() => onOffer("accept")} />
-        </View>
+      {toAnswer && (
+        <>
+          <View style={styles.offerActions}>
+            <Button title="Decline" small variant="danger" style={{ flex: 1 }} disabled={busy} onPress={() => onOffer("decline")} />
+            <Button title="Accept" small variant="green" style={{ flex: 1 }} loading={busy} onPress={() => onOffer("accept")} />
+          </View>
+          <Button
+            title="Counter offer"
+            Icon={Repeat}
+            small
+            variant="soft"
+            style={{ marginTop: 8 }}
+            disabled={busy}
+            onPress={() => onOffer("counter")}
+          />
+        </>
       )}
       {farmer && offer.status === "accepted" && listingActive && (
         <Button

@@ -46,6 +46,21 @@ export const deleteUserData = internalMutation({
       await ctx.db.delete("listings", row._id);
       bump("listings");
     }
+    for (const row of await ctx.db
+      .query("expenses")
+      .withIndex("by_userId_and_date", (q) => q.eq("userId", userId))
+      .take(MAX_ROWS)) {
+      await ctx.db.delete("expenses", row._id);
+      bump("expenses");
+    }
+    // Deals they made, as seller or buyer.
+    for (const row of [
+      ...(await ctx.db.query("sales").withIndex("by_farmerId_and_date", (q) => q.eq("farmerId", userId)).take(MAX_ROWS)),
+      ...(await ctx.db.query("sales").withIndex("by_buyerId_and_date", (q) => q.eq("buyerId", userId)).take(MAX_ROWS)),
+    ]) {
+      await ctx.db.delete("sales", row._id);
+      bump("sales");
+    }
     for (const row of await ctx.db.query("alerts").withIndex("by_user", (q) => q.eq("userId", userId)).take(MAX_ROWS)) {
       await ctx.db.delete("alerts", row._id);
       bump("alerts");

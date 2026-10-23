@@ -2,6 +2,7 @@ import { Platform } from "react-native";
 import { useConvexAuth, useQuery } from "convex/react";
 import { File } from "expo-file-system";
 import { api as rest, ApiError } from "@/lib/api/client";
+import { invalidate } from "@/lib/api/resources";
 import type { SendMessageBody } from "@/lib/api/types";
 import { api } from "../../../../convex/_generated/api";
 
@@ -29,6 +30,25 @@ export const markChatRead = (conversationId: string) =>
 export async function openChatFor(listingId: string) {
   const res = await rest.post<{ id: string; created: boolean }>("/conversations", { listingId });
   return res.id;
+}
+
+export type OfferAction = "accept" | "decline" | "markSold";
+
+/**
+ * Answers an offer from the other side. Accepting makes the deal: the
+ * quantity leaves the farmer's stock. Refreshes the dashboard and listings.
+ */
+export async function answerOffer(messageId: string, action: OfferAction, markSold = false) {
+  await rest.post<{ ok: true }>(`/messages/${messageId}/offer`, { action, markSold });
+  void invalidate("/dashboard", "/listings");
+}
+
+/** Buyer: opens (or finds) the chat about a listing and sends an offer; returns the chat id. */
+export async function makeOffer(listingId: string, offer: { price: number; quantity: number; body?: string }) {
+  const chatId = await openChatFor(listingId);
+  await sendMessage(chatId, { type: "offer", ...offer });
+  void invalidate("/dashboard");
+  return chatId;
 }
 
 async function readFile(uri: string, fallbackType: string) {

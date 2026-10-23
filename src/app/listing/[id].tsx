@@ -10,9 +10,10 @@ import {
   View,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { Check, MessageCircle, MessagesSquare, Pencil, Phone, Share2, Trash2 } from "lucide-react-native";
+import { Check, HandCoins, MessageCircle, MessagesSquare, Pencil, Phone, Share2, Trash2 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { errorText, openChatFor } from "@/components/kisan/chat/chat-api";
+import { errorText, makeOffer, openChatFor } from "@/components/kisan/chat/chat-api";
+import { OfferSheet } from "@/components/kisan/chat/offer-sheet";
 import { HillsScene } from "@/components/kisan/hills-scene";
 import {
   BackButton,
@@ -43,6 +44,7 @@ export default function ListingDetailScreen() {
   const insets = useSafeAreaInsets();
   const listing = useResource<ListingDetail>(id ? `/listings/${id}` : null);
   const [busy, setBusy] = useState<"sold" | "delete" | "chat" | null>(null);
+  const [offerOpen, setOfferOpen] = useState(false);
   const [today] = useState(() => todayPK(Date.now()));
 
   const l = listing.data;
@@ -253,20 +255,40 @@ export default function ListingDetailScreen() {
         ) : (
           <>
             <Button
-              title="Chat"
-              Icon={MessagesSquare}
+              title="Make offer"
+              Icon={HandCoins}
               variant="green"
               style={styles.flex}
-              loading={busy === "chat"}
               disabled={l.status !== "active"}
-              onPress={() => void chat()}
-              accessibilityLabel={`Chat with ${l.seller?.name ?? "the farmer"} in the app`}
+              onPress={() => setOfferOpen(true)}
+              accessibilityLabel={`Offer a price for some or all of the ${num(l.quantity)} maund`}
+            />
+            <IconButton
+              Icon={MessagesSquare}
+              label={`Chat with ${l.seller?.name ?? "the farmer"} in the app`}
+              size={56}
+              bg={theme.greenSoft}
+              color={theme.green}
+              onPress={busy || l.status !== "active" ? () => {} : () => void chat()}
             />
             <IconButton Icon={Phone} label="Call" size={56} bg={theme.ink} color={theme.card} onPress={call} />
-            <IconButton Icon={MessageCircle} label="WhatsApp" size={56} bg={theme.greenSoft} color={theme.green} onPress={whatsapp} />
+            <IconButton Icon={MessageCircle} label="WhatsApp" size={56} bg={theme.sand} color={theme.green} onPress={whatsapp} />
           </>
         )}
       </View>
+
+      {!l.isOwner && l.status === "active" && (
+        <OfferSheet
+          visible={offerOpen}
+          onClose={() => setOfferOpen(false)}
+          listing={l}
+          onSubmit={async (offer) => {
+            const chatId = await makeOffer(l.id, offer);
+            setOfferOpen(false);
+            router.push({ pathname: "/chat/[id]", params: { id: chatId } });
+          }}
+        />
+      )}
     </View>
   );
 }

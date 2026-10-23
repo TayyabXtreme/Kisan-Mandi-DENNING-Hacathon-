@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
-import { BadgeCheck, Calculator, ChevronDown, RefreshCw, Search, X } from "lucide-react-native";
+import { BadgeCheck, Calculator, ChevronDown, ChevronRight, LayoutDashboard, RefreshCw, Search, X } from "lucide-react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KisanDostButton } from "@/components/kisan/assistant/kisan-dost-button";
@@ -36,7 +36,7 @@ import {
   useResource,
   withQuery,
 } from "@/lib/api/resources";
-import type { Me, PriceRow, PricesResponse } from "@/lib/api/types";
+import type { DashboardResponse, Me, PriceRow, PricesResponse } from "@/lib/api/types";
 import { clock, dayLong, initials, num, todayPK } from "@/lib/format";
 import { CATEGORIES, type Category } from "../../../convex/lib/kisan";
 
@@ -82,6 +82,9 @@ export default function Prices() {
   const prices = useResource<PricesResponse>(marketId ? withQuery("/prices", { marketId }) : null);
   const isFarmer = me.data?.role === "farmer";
   const isAdmin = !!me.data?.isAdmin;
+  // Offers waiting for my answer, for the dashboard card badge.
+  const dashboard = useResource<DashboardResponse>(me.data?.role ? "/dashboard" : null);
+  const waitingOffers = dashboard.data?.offers.filter((o) => o.awaitingMe).length ?? 0;
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -97,7 +100,7 @@ export default function Prices() {
 
   // Pull to refresh reloads prices and re-evaluates the farmer's alerts (badge).
   const onRefresh = async () => {
-    await Promise.all([prices.refresh(), isFarmer ? load("/alerts") : null]);
+    await Promise.all([prices.refresh(), isFarmer ? load("/alerts") : null, load("/dashboard")]);
   };
 
   const chooseMarket = async (id: string) => {
@@ -202,6 +205,37 @@ export default function Prices() {
           )}
         </Tap>
         {!!marketError && <Text style={styles.inlineError}>{marketError}</Text>}
+
+        {/* Dashboard: stock, budget and buyer offers (farmers); offers and purchases (buyers). */}
+        {!!me.data?.role && (
+          <Tap
+            onPress={() => router.push("/dashboard")}
+            accessibilityRole="button"
+            accessibilityLabel={`Open my dashboard${waitingOffers ? `, ${waitingOffers} offers waiting` : ""}`}
+            style={styles.dashCard}
+            pressedStyle={{ opacity: 0.9 }}
+          >
+            <View style={styles.dashIcon}>
+              <LayoutDashboard size={22} color={theme.card} strokeWidth={2.2} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.dashTitle}>My Dashboard</Text>
+              <Text style={styles.dashSub} numberOfLines={1}>
+                {waitingOffers
+                  ? `${waitingOffers} offer${waitingOffers === 1 ? "" : "s"} waiting for you`
+                  : isFarmer
+                    ? "Stock, budget, expenses & buyer offers"
+                    : "Your offers and purchases"}
+              </Text>
+            </View>
+            {waitingOffers > 0 && (
+              <View style={styles.dashBadge}>
+                <Text style={styles.dashBadgeText}>{waitingOffers}</Text>
+              </View>
+            )}
+            <ChevronRight size={20} color={theme.card} strokeWidth={2.4} />
+          </Tap>
+        )}
 
         {/* Search */}
         <View style={styles.search}>
@@ -397,6 +431,36 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
   },
   publishedText: { fontFamily: fonts.semibold, fontSize: 12, color: theme.ink, flexShrink: 1 },
+  dashCard: {
+    marginTop: 12,
+    marginHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: theme.green,
+    borderRadius: 22,
+    padding: 14,
+  },
+  dashIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dashTitle: { fontFamily: fonts.bold, fontSize: 16, color: theme.card },
+  dashSub: { fontFamily: fonts.regular, fontSize: 12.5, color: "rgba(255,255,255,0.85)", marginTop: 1 },
+  dashBadge: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    paddingHorizontal: 6,
+    backgroundColor: theme.mustard,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dashBadgeText: { fontFamily: fonts.bold, fontSize: 12.5, color: theme.ink },
   inlineError: { marginHorizontal: 20, marginTop: 6, fontFamily: fonts.medium, fontSize: 12.5, color: theme.red },
   search: {
     marginTop: 16,

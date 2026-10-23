@@ -37,6 +37,18 @@ export const offerStatusValidator = v.union(
   v.literal("pending"),
   v.literal("accepted"),
   v.literal("declined"),
+  // Replaced by a newer offer (counter-offer) in the same chat.
+  v.literal("countered"),
+);
+export const expenseCategoryValidator = v.union(
+  v.literal("seed"),
+  v.literal("fertilizer"),
+  v.literal("pesticide"),
+  v.literal("labour"),
+  v.literal("irrigation"),
+  v.literal("machinery"),
+  v.literal("transport"),
+  v.literal("other"),
 );
 
 // Better Auth keeps its own tables (user, account, session, verification...)
@@ -182,6 +194,8 @@ export default defineSchema({
     buyerArchived: v.boolean(),
     farmerArchived: v.boolean(),
     status: v.union(v.literal("open"), v.literal("closed")),
+    /** The one offer waiting for an answer (a new offer counters the old one). */
+    pendingOfferId: v.optional(v.id("messages")),
   })
     .index("by_buyer_and_lastMessageAt", ["buyerId", "lastMessageAt"])
     .index("by_farmer_and_lastMessageAt", ["farmerId", "lastMessageAt"])
@@ -207,6 +221,36 @@ export default defineSchema({
     /** "Delete for me": at most the two participants. */
     deletedFor: v.optional(v.array(v.id("users"))),
   }).index("by_conversation", ["conversationId"]),
+
+  // A farmer's spending on a crop (seed, fertilizer, labour…), Rs.
+  expenses: defineTable({
+    userId: v.id("users"),
+    cropId: v.id("crops"),
+    category: expenseCategoryValidator,
+    amount: v.number(),
+    note: v.optional(v.string()),
+    /** YYYY-MM-DD (Pakistan) */
+    date: v.string(),
+  }).index("by_userId_and_date", ["userId", "date"]),
+
+  // One accepted offer = one deal. The quantity left the listing's stock.
+  sales: defineTable({
+    farmerId: v.id("users"),
+    buyerId: v.id("users"),
+    listingId: v.id("listings"),
+    cropId: v.id("crops"),
+    conversationId: v.id("conversations"),
+    messageId: v.id("messages"),
+    /** maund */
+    quantity: v.number(),
+    /** Rs per 40 kg */
+    price: v.number(),
+    total: v.number(),
+    /** YYYY-MM-DD (Pakistan) */
+    date: v.string(),
+  })
+    .index("by_farmerId_and_date", ["farmerId", "date"])
+    .index("by_buyerId_and_date", ["buyerId", "date"]),
 
   blocks: defineTable({
     userId: v.id("users"),

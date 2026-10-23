@@ -4,6 +4,7 @@ import { internal } from "../_generated/api";
 import {
   alertSchema,
   cropSchema,
+  expenseSchema,
   GRADES,
   HISTORY_DAYS,
   LANGS,
@@ -337,6 +338,51 @@ export function registerApi(http: HttpRouter) {
       userId: user.id,
       listingId: asId<"listings">(id),
     });
+    return { ok: true };
+  });
+
+  // ---- dashboard ----
+  // Farmers: stock, budget, offers to answer, deals. Buyers: offers and purchases.
+  route(http, "GET", `${API}/dashboard`, "profile", async ({ ctx, user, today }) =>
+    user.role === "farmer"
+      ? ctx.runQuery(internal.dashboard.farmer, { userId: user.id, date: today })
+      : ctx.runQuery(internal.dashboard.buyer, { userId: user.id }),
+  );
+
+  // ---- crop expenses (farmers) ----
+  route(http, "GET", `${API}/expenses`, "farmer", async ({ ctx, url, user }) =>
+    ctx.runQuery(internal.expenses.list, { userId: user.id, cropId: idParam<"crops">(url, "cropId") }),
+  );
+
+  route(http, "POST", `${API}/expenses`, "farmer", async ({ ctx, req, user, today }) => {
+    const body = await parseBody(req, expenseSchema(today));
+    const id = await ctx.runMutation(internal.expenses.create, {
+      userId: user.id,
+      cropId: asId<"crops">(body.cropId),
+      category: body.category,
+      amount: body.amount,
+      note: body.note || undefined,
+      date: body.date,
+    });
+    return { id };
+  });
+
+  route(http, "PATCH", `${API}/expenses/*`, "farmer", async ({ ctx, req, user, id, today }) => {
+    const body = await parseBody(req, expenseSchema(today));
+    await ctx.runMutation(internal.expenses.update, {
+      userId: user.id,
+      expenseId: asId<"expenses">(id),
+      cropId: asId<"crops">(body.cropId),
+      category: body.category,
+      amount: body.amount,
+      note: body.note || undefined,
+      date: body.date,
+    });
+    return { ok: true };
+  });
+
+  route(http, "DELETE", `${API}/expenses/*`, "farmer", async ({ ctx, user, id }) => {
+    await ctx.runMutation(internal.expenses.remove, { userId: user.id, expenseId: asId<"expenses">(id) });
     return { ok: true };
   });
 

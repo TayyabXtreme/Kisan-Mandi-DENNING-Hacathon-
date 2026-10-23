@@ -7,11 +7,13 @@ import { describe, test } from "node:test";
 import {
   addDays,
   evaluateAlert,
+  expenseSchema,
   listingSchema,
   marketLabel,
   normalizePhone,
   priceChange,
   profit,
+  round2,
   todayPK,
   toE164,
 } from "../convex/lib/kisan.ts";
@@ -214,5 +216,35 @@ describe("phone helpers", () => {
     assert.equal(toE164("03001234567"), "+923001234567");
     assert.equal(toE164("+92 300 1234567"), "+923001234567");
     assert.equal(toE164("923001234567"), "+923001234567");
+  });
+});
+
+describe("expenseSchema", () => {
+  const today = "2026-10-23";
+  const ok = { cropId: "c1", category: "seed", amount: 4500, date: today };
+  const code = (input) => expenseSchema(today).safeParse(input).error?.issues[0]?.message;
+
+  test("accepts a valid expense, coercing a numeric string amount", () => {
+    const parsed = expenseSchema(today).parse({ ...ok, amount: "4500" });
+    assert.equal(parsed.amount, 4500);
+  });
+  test("amount must be positive", () => {
+    assert.equal(code({ ...ok, amount: 0 }), "AMOUNT_POSITIVE");
+    assert.equal(code({ ...ok, amount: -5 }), "AMOUNT_POSITIVE");
+  });
+  test("past dates are fine, future dates are not", () => {
+    assert.equal(code({ ...ok, date: "2026-01-02" }), undefined);
+    assert.equal(code({ ...ok, date: "2026-10-24" }), "DATE_FUTURE");
+  });
+  test("unknown category and bad date format are rejected", () => {
+    assert.equal(code({ ...ok, category: "fuel" }), "CATEGORY_REQUIRED");
+    assert.equal(code({ ...ok, date: "23/10/2026" }), "DATE_INVALID");
+  });
+});
+
+describe("round2 (stock left after a deal)", () => {
+  test("avoids float noise", () => {
+    assert.equal(round2(0.1 + 0.2), 0.3);
+    assert.equal(round2(150 - 90.5), 59.5);
   });
 });

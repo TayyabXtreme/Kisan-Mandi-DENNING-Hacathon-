@@ -59,6 +59,8 @@ function Navigation() {
         <Stack.Screen name="crop/[cropId]" />
         <Stack.Screen name="listing/[id]" />
         <Stack.Screen name="profit" />
+        <Stack.Screen name="dashboard" />
+        <Stack.Screen name="expenses" />
         <Stack.Screen name="assistant" />
         <Stack.Screen name="connect-ai" />
         {/* Admin only: requests, markets, prices, messages (the API enforces it). */}
@@ -67,6 +69,7 @@ function Navigation() {
         {/* Forms slide up as modals (references 06 and 11). */}
         <Stack.Screen name="alert-form" options={{ presentation: "modal" }} />
         <Stack.Screen name="sell" options={{ presentation: "modal" }} />
+        <Stack.Screen name="expense-form" options={{ presentation: "modal" }} />
       </Stack.Protected>
     </Stack>
   );

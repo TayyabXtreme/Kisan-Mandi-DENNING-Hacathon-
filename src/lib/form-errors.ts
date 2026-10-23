@@ -26,7 +26,10 @@ const MESSAGES: Record<string, string> = {
   PRICE_TOO_LARGE: "That price is too large.",
   GRADE_REQUIRED: "Choose a grade.",
   DATE_PAST: "Date can't be in the past.",
-  DATE_INVALID: "Pick a valid date.",
+  DATE_INVALID: "Use the format YYYY-MM-DD.",
+  DATE_FUTURE: "Date can't be in the future.",
+  AMOUNT_POSITIVE: "Must be more than 0",
+  AMOUNT_TOO_LARGE: "That amount is too large.",
 };
 
 export const errorText = (code?: string) =>

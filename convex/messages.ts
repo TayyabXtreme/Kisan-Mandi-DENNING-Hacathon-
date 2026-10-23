@@ -1,6 +1,6 @@
 // Buyer <-> farmer chat: messages (docs/plan.md §7). The list is a public
 // paginated reactive query; sends and offer replies are internal mutations
-// called from convex/rest/chat_routes.ts.
+// called from convex/rest/chat_routes.ts. Accepted offers become `sales`.
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
@@ -14,6 +14,7 @@ import {
   sideOf,
 } from "./conversations";
 import { apiError } from "./lib/errors";
+import { round2, todayPK } from "./lib/kisan";
 import { requireUser } from "./users";
 
 const MAX_TEXT = 2000;
@@ -115,7 +116,7 @@ export const send = internalMutation({
         });
       }
       case "offer": {
-        if (side !== "buyer") apiError("BUYERS_ONLY", 403, "Only the buyer can make an offer.");
+        // Buyer offers; either side can answer with a counter-offer.
         const offer = args.offer;
         if (!offer || !(offer.price > 0)) apiError("PRICE_POSITIVE", 400, "Enter a price above 0.");
         if (!(offer.quantity > 0)) apiError("QTY_POSITIVE", 400, "Enter a quantity above 0.");
@@ -123,22 +124,31 @@ export const send = internalMutation({
         if (!listing || listing.status !== "active")
           apiError("LISTING_SOLD", 400, "This listing is no longer available.");
         if (offer.quantity > listing.quantity)
-          apiError("QTY_TOO_HIGH", 400, `The farmer has ${listing.quantity} maund.`);
-        return await insertMessage(ctx, conv, {
+          apiError("QTY_TOO_HIGH", 400, `Only ${listing.quantity} maund left in stock.`);
+        // A new offer replaces the one still waiting for an answer.
+        if (conv.pendingOfferId) {
+          const prev = await ctx.db.get("messages", conv.pendingOfferId);
+          if (prev?.offer?.status === "pending")
+            await ctx.db.patch("messages", prev._id, { offer: { ...prev.offer, status: "countered" } });
+        }
+        const id = await insertMessage(ctx, conv, {
           senderId: args.userId,
           type: "offer",
           body: body.slice(0, 500),
-          offer: { price: Math.round(offer.price), quantity: offer.quantity, status: "pending" },
+          offer: { price: Math.round(offer.price), quantity: round2(offer.quantity), status: "pending" },
         });
+        await ctx.db.patch("conversations", conv._id, { pendingOfferId: id });
+        return id;
       }
     }
   },
 });
 
 /**
- * Farmer answers a pending offer (accept / decline), optionally marking the
- * listing sold; "markSold" works on an already accepted offer. Each step adds
- * a system message.
+ * The other side answers a pending offer. Accepting makes a deal: the
+ * quantity leaves the listing's stock (sold out → listing sold) and a sale is
+ * recorded for both dashboards. "markSold" (farmer) closes the listing after
+ * an accepted offer. Each step adds a system message.
  */
 export const respondToOffer = internalMutation({
   args: {
@@ -152,23 +162,60 @@ export const respondToOffer = internalMutation({
     if (!message || message.type !== "offer" || !message.offer)
       apiError("NOT_FOUND", 404, "Offer not found.");
     const { conv, side } = await participantConversation(ctx, args.userId, message.conversationId);
-    if (side !== "farmer") apiError("FARMER_ONLY", 403, "Only the farmer can answer an offer.");
     const offer = message.offer;
     const terms = `Rs ${offer.price.toLocaleString("en-US")} × ${offer.quantity} maund`;
+    const listing = await ctx.db.get("listings", conv.listingId);
+    let soldOut = false;
 
     if (args.action === "markSold") {
+      if (side !== "farmer") apiError("FARMER_ONLY", 403, "Only the farmer can mark the listing sold.");
       if (offer.status !== "accepted") apiError("OFFER_NOT_ACCEPTED", 400, "Accept the offer first.");
     } else {
       if (offer.status !== "pending") apiError("OFFER_ANSWERED", 400, "This offer was already answered.");
-      const status = args.action === "accept" ? "accepted" : "declined";
-      await ctx.db.patch("messages", message._id, { offer: { ...offer, status } });
-      await insertMessage(ctx, conv, {
+      if (message.senderId === args.userId) apiError("OWN_OFFER", 400, "Wait for the other side to answer your offer.");
+      const pendingCleared = conv.pendingOfferId === message._id ? { pendingOfferId: undefined } : {};
+
+      if (args.action === "decline") {
+        await ctx.db.patch("messages", message._id, { offer: { ...offer, status: "declined" } });
+        await ctx.db.patch("conversations", conv._id, pendingCleared);
+        await insertMessage(ctx, { ...conv, ...pendingCleared }, { type: "system", body: `Offer declined: ${terms}.` }, args.userId);
+        return null;
+      }
+
+      // accept → deal: take the quantity out of stock.
+      if (!listing || listing.status !== "active")
+        apiError("LISTING_SOLD", 400, "This listing is no longer available.");
+      if (offer.quantity > listing.quantity)
+        apiError("QTY_TOO_HIGH", 400, `Only ${listing.quantity} maund left in stock. Send a new offer.`);
+      const left = round2(listing.quantity - offer.quantity);
+      soldOut = left <= 0;
+      await ctx.db.patch("listings", listing._id, {
+        // A sold-out listing keeps its last quantity on record.
+        ...(soldOut ? { status: "sold" as const } : { quantity: left }),
+        updatedAt: Date.now(),
+      });
+      await ctx.db.patch("messages", message._id, { offer: { ...offer, status: "accepted" } });
+      await ctx.db.patch("conversations", conv._id, pendingCleared);
+      await ctx.db.insert("sales", {
+        farmerId: conv.farmerId,
+        buyerId: conv.buyerId,
+        listingId: listing._id,
+        cropId: listing.cropId,
+        conversationId: conv._id,
+        messageId: message._id,
+        quantity: offer.quantity,
+        price: offer.price,
+        total: Math.round(offer.price * offer.quantity),
+        date: todayPK(Date.now()),
+      });
+      const fresh = (await ctx.db.get("conversations", conv._id))!;
+      await insertMessage(ctx, fresh, {
         type: "system",
-        body: status === "accepted" ? `Offer accepted: ${terms}.` : `Offer declined: ${terms}.`,
+        body: `Deal done: ${terms}. ${soldOut ? "The listing is now sold out." : `${left} maund left in stock.`}`,
       }, args.userId);
     }
 
-    if (args.action === "markSold" || (args.action === "accept" && args.markSold)) {
+    if (!soldOut && (args.action === "markSold" || (args.action === "accept" && args.markSold && side === "farmer"))) {
       // Reuses the listing owner check (403 when the listing isn't theirs).
       await ctx.runMutation(internal.listings.setStatus, {
         userId: args.userId,

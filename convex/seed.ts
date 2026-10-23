@@ -184,6 +184,7 @@ async function seedChats(ctx: MutationCtx) {
     let lastFarmerAt = 0;
     let farmerUnread = 0;
     let terms = "";
+    let pendingOfferId: Id<"messages"> | undefined;
     const lastFarmerIndex = script.map((m) => m[0]).lastIndexOf("f");
     for (const [index, [from, type, rawBody, minutesAgo, extra]] of script.entries()) {
       const at = now - minutesAgo * 60_000;
@@ -203,7 +204,7 @@ async function seedChats(ctx: MutationCtx) {
         farmerUnread = 0;
         lastFarmerAt = at;
       } else if (from === "b") farmerUnread++;
-      await ctx.db.insert("messages", {
+      const messageId = await ctx.db.insert("messages", {
         conversationId: convId,
         senderId,
         type,
@@ -214,6 +215,7 @@ async function seedChats(ctx: MutationCtx) {
         // The buyer has read everything; the farmer up to their last reply.
         readAt: from === "f" || (from === "b" && index < lastFarmerIndex) ? at + 60_000 : undefined,
       });
+      if (offer?.status === "pending") pendingOfferId = messageId;
       lastAt = at;
       lastType = type;
       lastSender = senderId;
@@ -226,6 +228,7 @@ async function seedChats(ctx: MutationCtx) {
       lastMessageAt: lastAt,
       farmerUnread,
       farmerLastReadAt: farmerUnread ? lastFarmerAt : now,
+      pendingOfferId,
     });
     made++;
   }
@@ -234,7 +237,7 @@ async function seedChats(ctx: MutationCtx) {
 
 async function wipe(ctx: MutationCtx) {
   await wipeChats(ctx, false);
-  for (const table of ["prices", "listings", "alerts", "adviceCache", "crops", "markets"] as const) {
+  for (const table of ["sales", "expenses", "prices", "listings", "alerts", "adviceCache", "crops", "markets"] as const) {
     for await (const row of ctx.db.query(table)) await ctx.db.delete(table, row._id);
   }
   for await (const user of ctx.db.query("users")) {

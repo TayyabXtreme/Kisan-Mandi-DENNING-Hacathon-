@@ -4,6 +4,7 @@ import type {
   Category,
   Condition,
   District,
+  ExpenseCategory,
   Grade,
   Lang,
   MarketLabel,
@@ -250,3 +251,40 @@ export type SendMessageBody =
 
 /** GET /conversations/counts — chats per listing id */
 export type ChatCountsResponse = { counts: Record<string, number> };
+
+// ---- Dashboard & crop expenses ----
+type Internal = typeof import("../../../convex/_generated/api").internal;
+type InternalReturns<F> = import("convex/server").FunctionReturnType<
+  F extends import("convex/server").FunctionReference<"query", "internal"> ? F : never
+>;
+
+/** GET /dashboard for a farmer (convex/dashboard.ts → farmer). */
+export type FarmerDashboard = InternalReturns<Internal["dashboard"]["farmer"]>;
+/** GET /dashboard for a buyer (convex/dashboard.ts → buyer). */
+export type BuyerDashboard = InternalReturns<Internal["dashboard"]["buyer"]>;
+export type DashboardResponse = FarmerDashboard | BuyerDashboard;
+/** An offer waiting for an answer in one of my chats. */
+export type OpenOffer = FarmerDashboard["offers"][number];
+
+/** GET /expenses?cropId */
+export type Expense = {
+  id: string;
+  crop: Crop;
+  category: ExpenseCategory;
+  /** Rs */
+  amount: number;
+  note: string | null;
+  /** YYYY-MM-DD */
+  date: string;
+  createdAt: number;
+};
+export type ExpensesResponse = { items: Expense[]; total: number };
+
+/** POST /expenses, PATCH /expenses/:id body */
+export type ExpenseBody = {
+  cropId: string;
+  category: ExpenseCategory;
+  amount: number;
+  note?: string;
+  date: string;
+};
