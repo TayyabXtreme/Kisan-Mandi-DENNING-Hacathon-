@@ -1,5 +1,11 @@
 # 🌾 KisanMandi — Mandi Prices, Direct Selling & Farm Budget
 
+> ### 📥 Download the APK & watch the demo video
+> **[➡️ Open the Google Drive folder](https://drive.google.com/drive/folders/1OT8kPSaK-WprHuD1CthFvOJTvK2cBUfS?usp=sharing)**
+>
+> The folder has the **Android APK** (install it on any Android phone) and a **video walkthrough** of the whole app.
+> A designed PDF version of this README is in [`KisanMandi-README.pdf`](KisanMandi-README.pdf).
+
 **KisanMandi** is a mobile app that helps **farmers in Sindh, Pakistan** get a fair price for their crops and helps **buyers** buy straight from farms.
 
 Farmers see today's wholesale (mandi) prices, compare markets and set price alerts. They list their produce, receive offers from buyers, negotiate in the app and track their stock, costs and profit on one dashboard. Buyers search the marketplace, say **how many maund they want and at what price**, and close the deal in chat. Both get a 7-day weather forecast with farm warnings, and an AI assistant (**Kisan Dost**) that understands Urdu, Sindhi and English, typed or spoken.
