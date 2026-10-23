@@ -22,6 +22,7 @@ import {
   Ban,
   Camera,
   ChevronDown,
+  CircleX,
   Copy,
   Flag,
   HandCoins,
@@ -35,7 +36,7 @@ import {
 } from "lucide-react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ActionSheet, confirmAction, notify, type SheetAction } from "@/components/kisan/chat/action-sheet";
+import { ActionSheet, notify, type SheetAction } from "@/components/kisan/chat/action-sheet";
 import {
   answerOffer,
   errorText,
@@ -48,6 +49,7 @@ import { Composer } from "@/components/kisan/chat/composer";
 import { DateSeparator, MessageBubble, type BubbleOfferAction, type OfferAction } from "@/components/kisan/chat/message-bubble";
 import { OfferSheet } from "@/components/kisan/chat/offer-sheet";
 import { Tap } from "@/components/kisan/tap";
+import { useConfirm } from "@/components/kisan/use-confirm";
 import { BackButton, Button, CropIcon, GradeBadge, IconButton, MarketLabelBadge, StateView, Tag } from "@/components/kisan/ui";
 import { UserAvatar } from "@/components/user-avatar";
 import { fonts } from "@/constants/fonts";
@@ -105,6 +107,7 @@ export default function ChatScreen() {
   const [selected, setSelected] = useState<ChatMessage | null>(null);
   /** The offer being countered (prefills the offer sheet); null for a fresh offer. */
   const [countering, setCountering] = useState<ChatMessage | null>(null);
+  const { confirm, dialog } = useConfirm();
   const [viewer, setViewer] = useState<string | null>(null);
 
   // Opening the chat (and every new incoming message while open) marks it read.
@@ -219,20 +222,33 @@ export default function ChatScreen() {
     } else if (action === "accept" && m.offer) {
       const terms = `${num(m.offer.quantity)} maund at ${rs(m.offer.price)}/40kg (total ${rs(m.offer.price * m.offer.quantity)})`;
       const left = listing ? listing.quantity - m.offer.quantity : 0;
-      confirmAction(
-        "Accept this offer?",
-        c.side === "farmer"
-          ? `You sell ${terms}. ${num(m.offer.quantity)} maund leaves your stock${left > 0 ? `, ${num(left)} maund stays listed` : " and the listing is sold out"}.`
-          : `You buy ${terms} from ${other?.name ?? "the farmer"}.`,
-        "Accept",
-        () => void offerAction(m, "accept"),
-      );
+      confirm({
+        title: "Accept this offer?",
+        message:
+          c.side === "farmer"
+            ? `You sell ${terms}. ${num(m.offer.quantity)} maund leaves your stock${left > 0 ? `, ${num(left)} maund stays listed` : " and the listing is sold out"}.`
+            : `You buy ${terms} from ${other?.name ?? "the farmer"}.`,
+        confirmTitle: "Accept",
+        Icon: HandCoins,
+        onConfirm: () => offerAction(m, "accept"),
+      });
     } else if (action === "decline")
-      confirmAction("Decline this offer?", `${other?.name ?? "They"} will see that you declined.`, "Decline", () => void offerAction(m, "decline"));
+      confirm({
+        title: "Decline this offer?",
+        message: `${other?.name ?? "They"} will see that you declined.`,
+        confirmTitle: "Decline",
+        Icon: CircleX,
+        destructive: true,
+        onConfirm: () => offerAction(m, "decline"),
+      });
     else
-      confirmAction("Mark listing as sold?", "Buyers will no longer see it in the Market.", "Mark sold", () =>
-        void offerAction(m, "markSold"),
-      );
+      confirm({
+        title: "Mark listing as sold?",
+        message: "Buyers will no longer see it in the Market.",
+        confirmTitle: "Mark sold",
+        Icon: Store,
+        onConfirm: () => offerAction(m, "markSold"),
+      });
   };
 
   const askAssistant = (m: ChatMessage) => {
@@ -292,9 +308,19 @@ export default function ChatScreen() {
           label: `Block ${name}`,
           Icon: Ban,
           destructive: true,
+          // Wait for the menu sheet to slide away before the dialog opens.
           onPress: () =>
-            confirmAction(`Block ${name}?`, "They won't be able to message you in any chat.", "Block", () =>
-              void setFlag("block", true),
+            setTimeout(
+              () =>
+                confirm({
+                  title: `Block ${name}?`,
+                  message: "They won't be able to message you in any chat.",
+                  confirmTitle: "Block",
+                  Icon: Ban,
+                  destructive: true,
+                  onConfirm: () => setFlag("block", true),
+                }),
+              260,
             ),
         },
     { label: "Report", Icon: Flag, destructive: true, onPress: () => setReportOpen(true) },
@@ -485,6 +511,7 @@ export default function ChatScreen() {
           }}
         />
       )}
+      {dialog}
       <Modal visible={!!viewer} transparent animationType="fade" onRequestClose={() => setViewer(null)}>
         <View style={styles.viewer}>
           {viewer && <Image source={{ uri: viewer }} style={{ flex: 1 }} contentFit="contain" accessibilityLabel="Photo" />}

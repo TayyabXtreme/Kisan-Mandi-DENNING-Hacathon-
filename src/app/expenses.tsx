@@ -3,10 +3,11 @@ import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native
 import { router, useLocalSearchParams } from "expo-router";
 import { Plus, Trash2 } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { confirmAction, notify } from "@/components/kisan/chat/action-sheet";
+import { notify } from "@/components/kisan/chat/action-sheet";
 import { errorText } from "@/components/kisan/chat/chat-api";
 import { EXPENSE_LABELS } from "@/components/kisan/dashboard/expense-labels";
 import { Tap } from "@/components/kisan/tap";
+import { useConfirm } from "@/components/kisan/use-confirm";
 import { Button, Chip, IconButton, ScreenTitle, StateView } from "@/components/kisan/ui";
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
@@ -21,6 +22,7 @@ export default function Expenses() {
   const [cropId, setCropId] = useState(typeof params.cropId === "string" ? params.cropId : undefined);
   const all = useResource<ExpensesResponse>("/expenses");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const { confirm, dialog } = useConfirm();
 
   const items = (all.data?.items ?? []).filter((e) => !cropId || e.crop.id === cropId);
   const total = items.reduce((sum, e) => sum + e.amount, 0);
@@ -28,16 +30,23 @@ export default function Expenses() {
   const crops = [...new Map((all.data?.items ?? []).map((e) => [e.crop.id, e.crop])).values()];
 
   const remove = (e: Expense) =>
-    confirmAction("Delete expense?", `${EXPENSE_LABELS[e.category].label} · ${rs(e.amount)} on ${e.crop.name}`, "Delete", async () => {
-      setBusyId(e.id);
-      try {
-        await api.del(`/expenses/${e.id}`);
-        await invalidate("/expenses", "/dashboard");
-      } catch (err) {
-        notify("Couldn't delete", errorText(err));
-      } finally {
-        setBusyId(null);
-      }
+    confirm({
+      title: "Delete expense?",
+      message: `${EXPENSE_LABELS[e.category].label} · ${rs(e.amount)} on ${e.crop.name}`,
+      confirmTitle: "Delete",
+      Icon: Trash2,
+      destructive: true,
+      onConfirm: async () => {
+        setBusyId(e.id);
+        try {
+          await api.del(`/expenses/${e.id}`);
+          await invalidate("/expenses", "/dashboard");
+        } catch (err) {
+          notify("Couldn't delete", errorText(err));
+        } finally {
+          setBusyId(null);
+        }
+      },
     });
 
   return (
@@ -109,6 +118,7 @@ export default function Expenses() {
           onPress={() => router.push({ pathname: "/expense-form", params: cropId ? { cropId } : {} })}
         />
       </View>
+      {dialog}
     </SafeAreaView>
   );
 }

@@ -1,14 +1,15 @@
 import { useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
-import { ChevronRight, HandCoins, Package, Plus, Receipt, ShoppingBasket, Store } from "lucide-react-native";
+import { ChevronRight, CircleX, HandCoins, Package, Plus, Receipt, ShoppingBasket, Store } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { confirmAction, notify } from "@/components/kisan/chat/action-sheet";
+import { notify } from "@/components/kisan/chat/action-sheet";
 import { answerOffer, errorText } from "@/components/kisan/chat/chat-api";
 import { BudgetChart } from "@/components/kisan/dashboard/budget-chart";
 import { EXPENSE_LABELS } from "@/components/kisan/dashboard/expense-labels";
 import { OfferCard } from "@/components/kisan/dashboard/offer-card";
 import { Tap } from "@/components/kisan/tap";
+import { useConfirm } from "@/components/kisan/use-confirm";
 import { Button, CropIcon, ScreenTitle, StateView } from "@/components/kisan/ui";
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
@@ -23,6 +24,7 @@ import { day, num, rs } from "@/lib/format";
 export default function Dashboard() {
   const dash = useResource<DashboardResponse>("/dashboard");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const { confirm, dialog } = useConfirm();
   const d = dash.data;
 
   const answer = async (o: OpenOffer, action: "accept" | "decline") => {
@@ -38,19 +40,26 @@ export default function Dashboard() {
   const accept = (o: OpenOffer, viewer: "farmer" | "buyer") => {
     const terms = `${num(o.quantity)} maund of ${o.listing.crop.name} at ${rs(o.price)}/40kg (total ${rs(o.total)})`;
     const left = o.listing.stock - o.quantity;
-    confirmAction(
-      "Accept this offer?",
-      viewer === "farmer"
-        ? `You sell ${terms} to ${o.other?.name ?? "the buyer"}. ${left > 0 ? `${num(left)} maund stays in stock.` : "The listing will be sold out."}`
-        : `You buy ${terms} from ${o.other?.name ?? "the farmer"}.`,
-      "Accept",
-      () => void answer(o, "accept"),
-    );
+    confirm({
+      title: "Accept this offer?",
+      message:
+        viewer === "farmer"
+          ? `You sell ${terms} to ${o.other?.name ?? "the buyer"}. ${left > 0 ? `${num(left)} maund stays in stock.` : "The listing will be sold out."}`
+          : `You buy ${terms} from ${o.other?.name ?? "the farmer"}.`,
+      confirmTitle: "Accept",
+      Icon: HandCoins,
+      onConfirm: () => answer(o, "accept"),
+    });
   };
   const decline = (o: OpenOffer) =>
-    confirmAction("Decline this offer?", `${o.other?.name ?? "They"} will see it in the chat.`, "Decline", () =>
-      void answer(o, "decline"),
-    );
+    confirm({
+      title: "Decline this offer?",
+      message: `${o.other?.name ?? "They"} will see it in the chat.`,
+      confirmTitle: "Decline",
+      Icon: CircleX,
+      destructive: true,
+      onConfirm: () => answer(o, "decline"),
+    });
 
   const offerCards = (offers: OpenOffer[], viewer: "farmer" | "buyer") =>
     offers.map((o) => (
@@ -81,6 +90,7 @@ export default function Dashboard() {
           <BuyerView d={d} offers={offerCards(d.offers, "buyer")} />
         )}
       </ScrollView>
+      {dialog}
     </SafeAreaView>
   );
 }

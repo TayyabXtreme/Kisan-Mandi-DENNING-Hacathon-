@@ -4,10 +4,10 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { confirmAction } from "@/components/kisan/chat/action-sheet";
 import { EXPENSE_LABELS } from "@/components/kisan/dashboard/expense-labels";
 import { Tap } from "@/components/kisan/tap";
 import { TextField } from "@/components/kisan/text-field";
+import { useConfirm } from "@/components/kisan/use-confirm";
 import { Button, Chip, FieldError, FieldLabel, ScreenTitle, StateView } from "@/components/kisan/ui";
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
@@ -69,6 +69,7 @@ function ExpenseForm({ id, initial, today }: { id?: string; initial: Initial; to
   const [serverError, setServerError] = useState("");
   const [busy, setBusy] = useState<"save" | "delete" | null>(null);
   const yesterday = addDays(today, -1);
+  const { confirm, dialog } = useConfirm();
 
   const save = async () => {
     if (busy) return;
@@ -104,17 +105,24 @@ function ExpenseForm({ id, initial, today }: { id?: string; initial: Initial; to
 
   const remove = () =>
     id &&
-    confirmAction("Delete expense?", "It will be removed from your budget.", "Delete", async () => {
-      setBusy("delete");
-      try {
-        await api.del(`/expenses/${id}`);
-        await invalidate("/expenses", "/dashboard");
-        router.back();
-      } catch (e) {
-        setServerError(e instanceof ApiError ? e.message : "Couldn't delete the expense.");
-      } finally {
-        setBusy(null);
-      }
+    confirm({
+      title: "Delete expense?",
+      message: "It will be removed from your budget.",
+      confirmTitle: "Delete",
+      Icon: Trash2,
+      destructive: true,
+      onConfirm: async () => {
+        setBusy("delete");
+        try {
+          await api.del(`/expenses/${id}`);
+          await invalidate("/expenses", "/dashboard");
+          router.back();
+        } catch (e) {
+          setServerError(e instanceof ApiError ? e.message : "Couldn't delete the expense.");
+        } finally {
+          setBusy(null);
+        }
+      },
     });
 
   return (
@@ -208,6 +216,7 @@ function ExpenseForm({ id, initial, today }: { id?: string; initial: Initial; to
       <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
         <Button title={id ? "Save changes" : "Save expense"} onPress={() => void save()} loading={busy === "save"} disabled={!!busy} />
       </View>
+      {dialog}
     </SafeAreaView>
   );
 }
