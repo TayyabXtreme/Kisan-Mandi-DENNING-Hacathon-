@@ -15,6 +15,7 @@ import { KisanDostButton } from "@/components/kisan/assistant/kisan-dost-button"
 import { TAB_BAR_SPACE } from "@/components/kisan/floating-tab-bar";
 import { AddMarketDialog } from "@/components/kisan/market/add-market-dialog";
 import { Tap } from "@/components/kisan/tap";
+import { WarningBox } from "@/components/kisan/weather/weather-card";
 import {
   CATEGORY_LABELS,
   Chip,
@@ -36,7 +37,7 @@ import {
   useResource,
   withQuery,
 } from "@/lib/api/resources";
-import type { DashboardResponse, Me, PriceRow, PricesResponse } from "@/lib/api/types";
+import type { DashboardResponse, Me, PriceRow, PricesResponse, WeatherResponse } from "@/lib/api/types";
 import { clock, dayLong, initials, num, todayPK } from "@/lib/format";
 import { CATEGORIES, type Category } from "../../../convex/lib/kisan";
 
@@ -85,6 +86,9 @@ export default function Prices() {
   // Offers waiting for my answer, for the dashboard card badge.
   const dashboard = useResource<DashboardResponse>(me.data?.role ? "/dashboard" : null);
   const waitingOffers = dashboard.data?.offers.filter((o) => o.awaitingMe).length ?? 0;
+  // The most serious weather warning for my district (Open-Meteo), if any.
+  const weather = useResource<WeatherResponse>(me.data?.district ? "/weather" : null);
+  const topWarning = weather.data?.warnings[0];
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -100,7 +104,7 @@ export default function Prices() {
 
   // Pull to refresh reloads prices and re-evaluates the farmer's alerts (badge).
   const onRefresh = async () => {
-    await Promise.all([prices.refresh(), isFarmer ? load("/alerts") : null, load("/dashboard")]);
+    await Promise.all([prices.refresh(), isFarmer ? load("/alerts") : null, load("/dashboard"), load("/weather")]);
   };
 
   const chooseMarket = async (id: string) => {
@@ -234,6 +238,17 @@ export default function Prices() {
               </View>
             )}
             <ChevronRight size={20} color={theme.card} strokeWidth={2.4} />
+          </Tap>
+        )}
+        {topWarning && weather.data && (
+          <Tap
+            onPress={() => router.push("/dashboard")}
+            accessibilityRole="button"
+            accessibilityHint="Opens the 7-day forecast"
+            style={styles.weatherBanner}
+            pressedStyle={{ opacity: 0.85 }}
+          >
+            <WarningBox w={topWarning} today={weather.data.days[0]?.date ?? ""} />
           </Tap>
         )}
 
@@ -431,6 +446,7 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
   },
   publishedText: { fontFamily: fonts.semibold, fontSize: 12, color: theme.ink, flexShrink: 1 },
+  weatherBanner: { marginTop: 10, marginHorizontal: 20 },
   dashCard: {
     marginTop: 12,
     marginHorizontal: 20,

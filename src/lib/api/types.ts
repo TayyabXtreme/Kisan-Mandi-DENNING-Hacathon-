@@ -288,3 +288,7 @@ export type ExpenseBody = {
   note?: string;
   date: string;
 };
+
+/** GET /weather?district — Open-Meteo 7-day forecast + farm warnings (convex/weather.ts). */
+export type WeatherResponse = import("../../../convex/weather").WeatherData;
+export type WeatherWarning = WeatherResponse["warnings"][number];

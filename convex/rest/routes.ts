@@ -18,6 +18,7 @@ import {
 } from "../lib/kisan";
 import { deleteAccountFully } from "../account";
 import { enforceEmailCheckLimit } from "../auth_limits";
+import { weatherFor } from "../weather";
 import { registerAssistantApi } from "./assistant_routes";
 import { registerChatApi } from "./chat_routes";
 import { API, asId, fail, idParam, parseBody, registerCors, route } from "./helpers";
@@ -348,6 +349,14 @@ export function registerApi(http: HttpRouter) {
       ? ctx.runQuery(internal.dashboard.farmer, { userId: user.id, date: today })
       : ctx.runQuery(internal.dashboard.buyer, { userId: user.id }),
   );
+
+  // ---- weather (Open-Meteo) ----
+  // 7-day forecast + farm warnings for ?district=, else the caller's district.
+  route(http, "GET", `${API}/weather`, "profile", async ({ ctx, url, user }) => {
+    const district = url.searchParams.get("district")?.trim() || user.district;
+    if (!district) throw fail(400, "MISSING_PARAM", "Set your district in your profile.", "district");
+    return await weatherFor(ctx, district);
+  });
 
   // ---- crop expenses (farmers) ----
   route(http, "GET", `${API}/expenses`, "farmer", async ({ ctx, url, user }) =>

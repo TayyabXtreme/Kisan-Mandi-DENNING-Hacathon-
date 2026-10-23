@@ -252,6 +252,14 @@ export default defineSchema({
     .index("by_farmerId_and_date", ["farmerId", "date"])
     .index("by_buyerId_and_date", ["buyerId", "date"]),
 
+  // Open-Meteo forecast per district (lowercase), refreshed every 30 min.
+  weatherCache: defineTable({
+    key: v.string(),
+    /** JSON of WeatherData (convex/weather.ts). */
+    json: v.string(),
+    fetchedAt: v.number(),
+  }).index("by_key", ["key"]),
+
   blocks: defineTable({
     userId: v.id("users"),
     blockedUserId: v.id("users"),

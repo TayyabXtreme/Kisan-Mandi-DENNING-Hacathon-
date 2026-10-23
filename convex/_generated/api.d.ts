@@ -29,6 +29,7 @@ import type * as lib_app_info from "../lib/app_info.js";
 import type * as lib_errors from "../lib/errors.js";
 import type * as lib_kisan from "../lib/kisan.js";
 import type * as lib_transcription from "../lib/transcription.js";
+import type * as lib_weather from "../lib/weather.js";
 import type * as listings from "../listings.js";
 import type * as markets from "../markets.js";
 import type * as mcp_keys from "../mcp_keys.js";
@@ -42,6 +43,7 @@ import type * as rest_routes from "../rest/routes.js";
 import type * as seed from "../seed.js";
 import type * as support from "../support.js";
 import type * as users from "../users.js";
+import type * as weather from "../weather.js";
 
 import type {
   ApiFromModules,
@@ -71,6 +73,7 @@ declare const fullApi: ApiFromModules<{
   "lib/errors": typeof lib_errors;
   "lib/kisan": typeof lib_kisan;
   "lib/transcription": typeof lib_transcription;
+  "lib/weather": typeof lib_weather;
   listings: typeof listings;
   markets: typeof markets;
   mcp_keys: typeof mcp_keys;
@@ -84,6 +87,7 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   support: typeof support;
   users: typeof users;
+  weather: typeof weather;
 }>;
 
 /**

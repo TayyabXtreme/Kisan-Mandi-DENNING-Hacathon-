@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { notify } from "@/components/kisan/chat/action-sheet";
 import { answerOffer, errorText } from "@/components/kisan/chat/chat-api";
 import { BudgetChart } from "@/components/kisan/dashboard/budget-chart";
+import { WeatherCard } from "@/components/kisan/weather/weather-card";
 import { EXPENSE_LABELS } from "@/components/kisan/dashboard/expense-labels";
 import { OfferCard } from "@/components/kisan/dashboard/offer-card";
 import { Tap } from "@/components/kisan/tap";
@@ -14,7 +15,7 @@ import { Button, CropIcon, ScreenTitle, StateView } from "@/components/kisan/ui"
 import { fonts } from "@/constants/fonts";
 import { theme } from "@/constants/theme";
 import { useResource } from "@/lib/api/resources";
-import type { BuyerDashboard, DashboardResponse, FarmerDashboard, OpenOffer } from "@/lib/api/types";
+import type { BuyerDashboard, DashboardResponse, FarmerDashboard, OpenOffer, WeatherResponse } from "@/lib/api/types";
 import { day, num, rs } from "@/lib/format";
 
 /**
@@ -26,6 +27,16 @@ export default function Dashboard() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const { confirm, dialog } = useConfirm();
   const d = dash.data;
+  const weather = useResource<WeatherResponse>("/weather");
+  const weatherSection = (
+    <Section
+      title="Weather"
+      count={weather.data?.warnings.filter((w) => w.level === "warning").length}
+      hint="7-day forecast and farm warnings for your district"
+    >
+      <WeatherCard data={weather.data} loading={weather.loading} error={weather.error} onRetry={() => void weather.refresh()} />
+    </Section>
+  );
 
   const answer = async (o: OpenOffer, action: "accept" | "decline") => {
     setBusyId(o.id);
@@ -78,16 +89,16 @@ export default function Dashboard() {
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={
-          <RefreshControl refreshing={dash.refreshing} onRefresh={() => void dash.refresh()} tintColor={theme.green} colors={[theme.green]} />
+          <RefreshControl refreshing={dash.refreshing} onRefresh={() => void Promise.all([dash.refresh(), weather.refresh()])} tintColor={theme.green} colors={[theme.green]} />
         }
       >
         <ScreenTitle title="My Dashboard" />
         {!d ? (
           <StateView loading={dash.loading} error={dash.error} onRetry={() => void dash.refresh()} />
         ) : d.role === "farmer" ? (
-          <FarmerView d={d} offers={offerCards(d.offers, "farmer")} />
+          <FarmerView d={d} offers={offerCards(d.offers, "farmer")} weather={weatherSection} />
         ) : (
-          <BuyerView d={d} offers={offerCards(d.offers, "buyer")} />
+          <BuyerView d={d} offers={offerCards(d.offers, "buyer")} weather={weatherSection} />
         )}
       </ScrollView>
       {dialog}
@@ -95,7 +106,7 @@ export default function Dashboard() {
   );
 }
 
-function FarmerView({ d, offers }: { d: FarmerDashboard; offers: ReactNode[] }) {
+function FarmerView({ d, offers, weather }: { d: FarmerDashboard; offers: ReactNode[]; weather: ReactNode }) {
   const t = d.totals;
   const loss = t.profit < 0;
   const waiting = d.offers.filter((o) => o.awaitingMe).length;
@@ -132,6 +143,8 @@ function FarmerView({ d, offers }: { d: FarmerDashboard; offers: ReactNode[] }) 
           <Empty text="No offers right now. When a buyer offers a price for your stock, it shows up here." />
         )}
       </Section>
+
+      {weather}
 
       <Section
         title="Budget"
@@ -271,7 +284,7 @@ function FarmerView({ d, offers }: { d: FarmerDashboard; offers: ReactNode[] }) 
   );
 }
 
-function BuyerView({ d, offers }: { d: BuyerDashboard; offers: ReactNode[] }) {
+function BuyerView({ d, offers, weather }: { d: BuyerDashboard; offers: ReactNode[]; weather: ReactNode }) {
   const t = d.totals;
   return (
     <>
@@ -291,6 +304,8 @@ function BuyerView({ d, offers }: { d: BuyerDashboard; offers: ReactNode[] }) {
           </View>
         </View>
       </View>
+
+      {weather}
 
       <Section
         title="My offers"
