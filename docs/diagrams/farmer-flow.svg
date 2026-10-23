@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="600" viewBox="0 0 1180 600" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Farmer journey in KisanMandi">
+<title>Farmer journey in KisanMandi</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2B2118"/></marker><marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F7A3F"/></marker><marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C4483A"/></marker></defs>
+<rect width="1180" height="600" rx="24" fill="#F3EEE4"/>
+<text x="32" y="46" font-size="24" font-weight="800" fill="#2B2118" text-anchor="start">Farmer journey</text>
+<text x="32" y="72" font-size="14" font-weight="400" fill="#7A6F64" text-anchor="start">From sign-up to a closed deal and a clear profit</text>
+<rect x="24" y="96" width="1132" height="114" rx="20" fill="#FFFFFF" fill-opacity="0.45"/>
+<rect x="36" y="110" width="100" height="86" rx="16" fill="#DDEBD5"/>
+<text x="86.0" y="157.0" font-size="14" font-weight="700" fill="#3F7A3F" text-anchor="middle">Start</text>
+<rect x="150" y="110" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="250.0" y="148.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Sign up</text>
+<text x="250.0" y="166.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">email + password or Google</text>
+<line x1="354" y1="153.0" x2="386" y2="153.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="390" y="110" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="490.0" y="148.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Verify</text>
+<text x="490.0" y="166.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">6-digit code by email</text>
+<line x1="594" y1="153.0" x2="626" y2="153.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="630" y="110" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="730.0" y="148.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Profile</text>
+<text x="730.0" y="166.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">Farmer · district · mandi</text>
+<line x1="834" y1="153.0" x2="866" y2="153.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="870" y="110" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="970.0" y="148.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Home</text>
+<text x="970.0" y="166.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">today&#x27;s prices + weather</text>
+<rect x="24" y="216" width="1132" height="114" rx="20" fill="#FFFFFF" fill-opacity="0.45"/>
+<rect x="36" y="230" width="100" height="86" rx="16" fill="#D4E7EF"/>
+<text x="86.0" y="277.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Market</text>
+<rect x="150" y="230" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="250.0" y="268.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Crop detail</text>
+<text x="250.0" y="286.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">14-day trend · best mandi</text>
+<line x1="354" y1="273.0" x2="386" y2="273.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="390" y="230" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="490.0" y="268.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">AI advice</text>
+<text x="490.0" y="286.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">sell now or wait?</text>
+<line x1="594" y1="273.0" x2="626" y2="273.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="630" y="230" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="730.0" y="268.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Price alert</text>
+<text x="730.0" y="286.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">above / below target</text>
+<line x1="834" y1="273.0" x2="866" y2="273.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="870" y="230" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="970.0" y="268.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Kisan Dost</text>
+<text x="970.0" y="286.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">ask by voice in Urdu/Sindhi</text>
+<rect x="24" y="336" width="1132" height="114" rx="20" fill="#FFFFFF" fill-opacity="0.45"/>
+<rect x="36" y="350" width="100" height="86" rx="16" fill="#F6E7B8"/>
+<text x="86.0" y="397.0" font-size="14" font-weight="700" fill="#7A5A12" text-anchor="middle">Sell</text>
+<rect x="150" y="350" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="250.0" y="388.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Sell produce</text>
+<text x="250.0" y="406.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">crop · maund · price (voice)</text>
+<line x1="354" y1="393.0" x2="386" y2="393.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="390" y="350" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="490.0" y="388.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Listed</text>
+<text x="490.0" y="406.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">visible in Marketplace</text>
+<line x1="594" y1="393.0" x2="626" y2="393.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="630" y="350" width="200" height="86" rx="16" fill="#FFFFFF" stroke="#EFD27C" stroke-width="2"/>
+<text x="730.0" y="388.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Buyer offer</text>
+<text x="730.0" y="406.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">wants X maund at Rs Y</text>
+<line x1="834" y1="393.0" x2="866" y2="393.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="870" y="350" width="200" height="86" rx="16" fill="#FFFFFF" stroke="#3F7A3F" stroke-width="2"/>
+<text x="970.0" y="388.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Answer</text>
+<text x="970.0" y="406.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">Accept · Negotiate · Decline</text>
+<rect x="24" y="456" width="1132" height="114" rx="20" fill="#FFFFFF" fill-opacity="0.45"/>
+<rect x="36" y="470" width="100" height="86" rx="16" fill="#DDEBD5"/>
+<text x="86.0" y="517.0" font-size="14" font-weight="700" fill="#3F7A3F" text-anchor="middle">Track</text>
+<rect x="150" y="470" width="200" height="86" rx="16" fill="#FFFFFF" stroke="#3F7A3F" stroke-width="2"/>
+<text x="250.0" y="508.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Deal done</text>
+<text x="250.0" y="526.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">stock goes down by X</text>
+<line x1="354" y1="513.0" x2="386" y2="513.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="390" y="470" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="490.0" y="508.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Dashboard</text>
+<text x="490.0" y="526.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">profit · stock · deals</text>
+<line x1="594" y1="513.0" x2="626" y2="513.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="630" y="470" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="730.0" y="508.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Expenses</text>
+<text x="730.0" y="526.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">seed · fertilizer · labour…</text>
+<line x1="834" y1="513.0" x2="866" y2="513.0" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="870" y="470" width="200" height="86" rx="16" fill="#FFFFFF"/>
+<text x="970.0" y="508.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Budget chart</text>
+<text x="970.0" y="526.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">spent vs earned / month</text>
+<path d="M 970 200 L 970 212 L 250 212 L 250 226" fill="none" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<path d="M 970 320 L 970 332 L 250 332 L 250 346" fill="none" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<path d="M 970 440 L 970 452 L 250 452 L 250 466" fill="none" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+</svg>

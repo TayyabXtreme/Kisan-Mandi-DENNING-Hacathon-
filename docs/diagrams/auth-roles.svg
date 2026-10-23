@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Sign-in and roles">
+<title>Sign-in and roles</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2B2118"/></marker><marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F7A3F"/></marker><marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C4483A"/></marker></defs>
+<rect width="1100" height="560" rx="24" fill="#F3EEE4"/>
+<text x="32" y="46" font-size="24" font-weight="800" fill="#2B2118" text-anchor="start">Sign-in and roles</text>
+<text x="32" y="72" font-size="14" font-weight="400" fill="#7A6F64" text-anchor="start">Better Auth inside Convex; the role decides what each person can do</text>
+<rect x="32" y="110" width="230" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="147.0" y="140.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Email + password</text>
+<text x="147.0" y="158.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">min 8 characters</text>
+<rect x="32" y="200" width="230" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="147.0" y="230.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Continue with Google</text>
+<text x="147.0" y="248.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">OAuth</text>
+<rect x="310" y="110" width="230" height="70" rx="16" fill="#F6E7B8"/>
+<text x="425.0" y="140.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">6-digit code</text>
+<text x="425.0" y="158.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">sent by Resend</text>
+<rect x="590" y="150" width="230" height="80" rx="16" fill="#FFFFFF" stroke="#3F7A3F" stroke-width="2"/>
+<text x="705.0" y="176.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">Better Auth session</text>
+<text x="705.0" y="194.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">→ Convex JWT</text>
+<text x="705.0" y="212.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">token on every request</text>
+<rect x="860" y="150" width="210" height="80" rx="16" fill="#FFFFFF"/>
+<text x="965.0" y="176.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle">users table</text>
+<text x="965.0" y="194.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">mirrored by triggers</text>
+<text x="965.0" y="212.0" font-size="13" font-weight="400" fill="#7A6F64" text-anchor="middle">role · district · mandi</text>
+<line x1="264" y1="145" x2="306" y2="145" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="542" y1="150" x2="586" y2="175" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="264" y1="235" x2="586" y2="205" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="425.0" y="240.0" font-size="12" font-weight="600" fill="#2B2118" text-anchor="middle">no code needed</text>
+<line x1="822" y1="190" x2="856" y2="190" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="32" y="290" width="332" height="236" rx="20" fill="#FFFFFF"/>
+<text x="198.0" y="412.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle"></text>
+<rect x="32" y="290" width="332" height="46" rx="20" fill="#DDEBD5"/>
+<rect x="32" y="316" width="332" height="20" fill="#DDEBD5"/>
+<text x="50" y="320" font-size="16" font-weight="800" fill="#3F7A3F" text-anchor="start">Farmer</text>
+<circle cx="56" cy="364" r="4" fill="#3F7A3F"/>
+<text x="70" y="369" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Prices, trends, AI advice</text>
+<circle cx="56" cy="398" r="4" fill="#3F7A3F"/>
+<text x="70" y="403" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Price alerts (+ email)</text>
+<circle cx="56" cy="432" r="4" fill="#3F7A3F"/>
+<text x="70" y="437" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Sell produce · My listings</text>
+<circle cx="56" cy="466" r="4" fill="#3F7A3F"/>
+<text x="70" y="471" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Answer offers, negotiate</text>
+<circle cx="56" cy="500" r="4" fill="#3F7A3F"/>
+<text x="70" y="505" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Dashboard, expenses, budget</text>
+<rect x="384" y="290" width="332" height="236" rx="20" fill="#FFFFFF"/>
+<text x="550.0" y="412.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle"></text>
+<rect x="384" y="290" width="332" height="46" rx="20" fill="#D4E7EF"/>
+<rect x="384" y="316" width="332" height="20" fill="#D4E7EF"/>
+<text x="402" y="320" font-size="16" font-weight="800" fill="#2B2118" text-anchor="start">Buyer</text>
+<circle cx="408" cy="364" r="4" fill="#2B2118"/>
+<text x="422" y="369" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Prices, trends, AI advice</text>
+<circle cx="408" cy="398" r="4" fill="#2B2118"/>
+<text x="422" y="403" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Marketplace search &amp; filters</text>
+<circle cx="408" cy="432" r="4" fill="#2B2118"/>
+<text x="422" y="437" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Make offers (maund + price)</text>
+<circle cx="408" cy="466" r="4" fill="#2B2118"/>
+<text x="422" y="471" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Chat, counter, accept</text>
+<circle cx="408" cy="500" r="4" fill="#2B2118"/>
+<text x="422" y="505" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Offers &amp; purchases dashboard</text>
+<rect x="736" y="290" width="332" height="236" rx="20" fill="#FFFFFF"/>
+<text x="902.0" y="412.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle"></text>
+<rect x="736" y="290" width="332" height="46" rx="20" fill="#F6E7B8"/>
+<rect x="736" y="316" width="332" height="20" fill="#F6E7B8"/>
+<text x="754" y="320" font-size="16" font-weight="800" fill="#7A5A12" text-anchor="start">Admin</text>
+<circle cx="760" cy="364" r="4" fill="#7A5A12"/>
+<text x="774" y="369" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Email listed in ADMIN_EMAILS</text>
+<circle cx="760" cy="398" r="4" fill="#7A5A12"/>
+<text x="774" y="403" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Approve / reject mandi requests</text>
+<circle cx="760" cy="432" r="4" fill="#7A5A12"/>
+<text x="774" y="437" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Add &amp; edit markets</text>
+<circle cx="760" cy="466" r="4" fill="#7A5A12"/>
+<text x="774" y="471" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Publish today&#x27;s prices</text>
+<circle cx="760" cy="500" r="4" fill="#7A5A12"/>
+<text x="774" y="505" font-size="13.5" font-weight="500" fill="#2B2118" text-anchor="start">Read “Contact admin” messages</text>
+</svg>

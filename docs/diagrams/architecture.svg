@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="640" viewBox="0 0 1100 640" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="KisanMandi architecture">
+<title>KisanMandi architecture</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2B2118"/></marker><marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F7A3F"/></marker><marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C4483A"/></marker></defs>
+<rect width="1100" height="640" rx="24" fill="#F3EEE4"/>
+<text x="32" y="46" font-size="24" font-weight="800" fill="#2B2118" text-anchor="start">How KisanMandi fits together</text>
+<text x="32" y="72" font-size="14" font-weight="400" fill="#7A6F64" text-anchor="start">One Expo app, one Convex backend, a few outside services</text>
+<rect x="32" y="110" width="300" height="470" rx="22" fill="#FFFFFF"/>
+<text x="182.0" y="349.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle"></text>
+<text x="182" y="146" font-size="18" font-weight="800" fill="#2B2118" text-anchor="middle">Mobile app</text>
+<text x="182" y="168" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">React Native · Expo SDK 57 · Expo Router</text>
+<rect x="52" y="190" width="260" height="62" rx="16" fill="#F3EEE4"/>
+<text x="182.0" y="216.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Screens (src/app)</text>
+<text x="182.0" y="233.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">prices · market · chats · dashboard</text>
+<rect x="52" y="266" width="260" height="62" rx="16" fill="#F3EEE4"/>
+<text x="182.0" y="292.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">UI kit (components/kisan)</text>
+<text x="182.0" y="309.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">buttons · sheets · charts · dialogs</text>
+<rect x="52" y="342" width="260" height="62" rx="16" fill="#F3EEE4"/>
+<text x="182.0" y="368.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">REST client + cache</text>
+<text x="182.0" y="385.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">useResource · invalidate</text>
+<rect x="52" y="418" width="260" height="62" rx="16" fill="#F3EEE4"/>
+<text x="182.0" y="444.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Realtime chat</text>
+<text x="182.0" y="461.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">Convex useQuery (live)</text>
+<rect x="52" y="494" width="260" height="62" rx="16" fill="#F3EEE4"/>
+<text x="182.0" y="520.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Voice &amp; device</text>
+<text x="182.0" y="537.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">mic · camera · speech · haptics</text>
+<rect x="392" y="110" width="330" height="470" rx="22" fill="#FFFFFF"/>
+<text x="557.0" y="349.0" font-size="14" font-weight="700" fill="#2B2118" text-anchor="middle"></text>
+<text x="557" y="146" font-size="18" font-weight="800" fill="#2B2118" text-anchor="middle">Convex backend</text>
+<text x="557" y="168" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">TypeScript functions + database</text>
+<rect x="412" y="190" width="290" height="62" rx="16" fill="#DDEBD5"/>
+<text x="557.0" y="216.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">REST API  /api/v1</text>
+<text x="557.0" y="233.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">zod checks · role &amp; owner rules</text>
+<rect x="412" y="266" width="290" height="62" rx="16" fill="#DDEBD5"/>
+<text x="557.0" y="292.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">MCP server  /mcp/&lt;key&gt;</text>
+<text x="557.0" y="309.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">read-only tools for ChatGPT / Claude</text>
+<rect x="412" y="342" width="290" height="62" rx="16" fill="#F3EEE4"/>
+<text x="557.0" y="368.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Queries · mutations · actions</text>
+<text x="557.0" y="385.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">listings, offers, deals, alerts…</text>
+<rect x="412" y="418" width="290" height="62" rx="16" fill="#F3EEE4"/>
+<text x="557.0" y="444.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Database (tables)</text>
+<text x="557.0" y="461.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">users · prices · listings · sales…</text>
+<rect x="412" y="494" width="290" height="62" rx="16" fill="#F3EEE4"/>
+<text x="557.0" y="520.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Crons · file storage</text>
+<text x="557.0" y="537.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">daily prices · voice notes, photos</text>
+<rect x="800" y="118" width="268" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="934.0" y="148.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Better Auth</text>
+<text x="934.0" y="165.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">email code · Google · sessions</text>
+<line x1="722" y1="153" x2="796" y2="153" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<rect x="800" y="210" width="268" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="934.0" y="240.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">AWS Bedrock</text>
+<text x="934.0" y="257.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">Kisan Dost AI · advice</text>
+<line x1="722" y1="245" x2="796" y2="245" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<rect x="800" y="302" width="268" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="934.0" y="332.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Groq Whisper</text>
+<text x="934.0" y="349.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">speech → text</text>
+<line x1="722" y1="337" x2="796" y2="337" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<rect x="800" y="394" width="268" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="934.0" y="424.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Resend</text>
+<text x="934.0" y="441.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">codes · alert emails</text>
+<line x1="722" y1="429" x2="796" y2="429" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<rect x="800" y="486" width="268" height="70" rx="16" fill="#FFFFFF" stroke="#D8CFBF" stroke-width="2"/>
+<text x="934.0" y="516.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">Open-Meteo</text>
+<text x="934.0" y="533.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">forecast · weather warnings</text>
+<line x1="722" y1="521" x2="796" y2="521" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<line x1="334" y1="300" x2="388" y2="300" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="361.0" y="292.0" font-size="12" font-weight="600" fill="#2B2118" text-anchor="middle">HTTPS + JWT</text>
+<line x1="388" y1="360" x2="334" y2="360" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="361.0" y="378.0" font-size="12" font-weight="600" fill="#2B2118" text-anchor="middle">JSON</text>
+<line x1="334" y1="470" x2="388" y2="470" stroke="#2B2118" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+<text x="361.0" y="462.0" font-size="12" font-weight="600" fill="#2B2118" text-anchor="middle">websocket</text>
+<rect x="392" y="596" width="293.44" height="24" rx="12.0" fill="#F6E7B8"/>
+<text x="538.72" y="611" font-size="12" font-weight="700" fill="#7A5A12" text-anchor="middle">ChatGPT / Claude → MCP link (read-only)</text>
+</svg>

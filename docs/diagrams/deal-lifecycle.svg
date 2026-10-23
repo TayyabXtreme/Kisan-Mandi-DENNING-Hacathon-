@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="How an offer becomes a deal">
+<title>How an offer becomes a deal</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2B2118"/></marker><marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F7A3F"/></marker><marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C4483A"/></marker></defs>
+<rect width="1100" height="760" rx="24" fill="#F3EEE4"/>
+<text x="32" y="46" font-size="24" font-weight="800" fill="#2B2118" text-anchor="start">How an offer becomes a deal</text>
+<text x="32" y="72" font-size="14" font-weight="400" fill="#7A6F64" text-anchor="start">Example: a farmer lists 100 maund of tomato at Rs 250 / 40 kg</text>
+<rect x="50" y="96" width="240" height="48" rx="16" fill="#FFFFFF"/>
+<text x="170.0" y="124.5" font-size="15" font-weight="700" fill="#2B2118" text-anchor="middle">Buyer</text>
+<line x1="170" y1="146" x2="170" y2="730" stroke="#D8CFBF" stroke-width="2" stroke-dasharray="4 6"/>
+<rect x="430" y="96" width="240" height="48" rx="16" fill="#2B2118"/>
+<text x="550.0" y="124.5" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">KisanMandi (Convex)</text>
+<line x1="550" y1="146" x2="550" y2="730" stroke="#D8CFBF" stroke-width="2" stroke-dasharray="4 6"/>
+<rect x="810" y="96" width="240" height="48" rx="16" fill="#FFFFFF"/>
+<text x="930.0" y="124.5" font-size="15" font-weight="700" fill="#2B2118" text-anchor="middle">Farmer</text>
+<line x1="930" y1="146" x2="930" y2="730" stroke="#D8CFBF" stroke-width="2" stroke-dasharray="4 6"/>
+<line x1="178" y1="180" x2="542" y2="180" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="360.0" y="171" font-size="12.5" font-weight="600" fill="#2B2118" text-anchor="middle">Make offer: 50 maund × Rs 250</text>
+<rect x="400.0" y="208" width="300" height="56" rx="16" fill="#F3EEE4"/>
+<text x="550.0" y="231.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">offer saved as “pending”</text>
+<text x="550.0" y="248.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">one open offer per chat</text>
+<line x1="558" y1="300" x2="922" y2="300" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<text x="740.0" y="291" font-size="12.5" font-weight="600" fill="#3F7A3F" text-anchor="middle">Buyer offers badge + chat message</text>
+<line x1="922" y1="346" x2="558" y2="346" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="740.0" y="337" font-size="12.5" font-weight="600" fill="#2B2118" text-anchor="middle">Counter offer: 50 maund × Rs 270</text>
+<rect x="400.0" y="374" width="300" height="56" rx="16" fill="#F3EEE4"/>
+<text x="550.0" y="397.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">old offer → “countered”</text>
+<text x="550.0" y="414.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">new offer pending for the buyer</text>
+<line x1="542" y1="466" x2="178" y2="466" stroke="#3F7A3F" stroke-width="2" marker-end="url(#arrG)"/>
+<text x="360.0" y="457" font-size="12.5" font-weight="600" fill="#3F7A3F" text-anchor="middle">Counter offer arrives in chat</text>
+<line x1="178" y1="512" x2="542" y2="512" stroke="#2B2118" stroke-width="2" marker-end="url(#arr)"/>
+<text x="360.0" y="503" font-size="12.5" font-weight="600" fill="#2B2118" text-anchor="middle">Accept</text>
+<rect x="390.0" y="540" width="320" height="92" rx="16" fill="#DDEBD5"/>
+<text x="550.0" y="564.0" font-size="13" font-weight="700" fill="#2B2118" text-anchor="middle">checks stock: 50 ≤ 100 ✓</text>
+<text x="550.0" y="581.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">listing: 100 → 50 maund left</text>
+<text x="550.0" y="598.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">deal saved (Rs 13,500)</text>
+<text x="550.0" y="615.0" font-size="12" font-weight="400" fill="#7A6F64" text-anchor="middle">(at 0 left the listing is sold out)</text>
+<line x1="542" y1="668" x2="178" y2="668" stroke="#3F7A3F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrG)"/>
+<text x="360.0" y="659" font-size="12.5" font-weight="600" fill="#3F7A3F" text-anchor="middle">“Deal done” in chat · Purchases</text>
+<line x1="558" y1="714" x2="922" y2="714" stroke="#3F7A3F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrG)"/>
+<text x="740.0" y="705" font-size="12.5" font-weight="600" fill="#3F7A3F" text-anchor="middle">“Deal done” · stock &amp; profit updated</text>
+<rect x="32" y="724" width="404.79999999999995" height="24" rx="12.0" fill="#F7DCD6"/>
+<text x="234.39999999999998" y="739" font-size="12" font-weight="700" fill="#C4483A" text-anchor="middle">Decline at any step → offer “declined”, stock unchanged</text>
+</svg>
